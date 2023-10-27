@@ -107,7 +107,7 @@ end
 --- #0251
 
 local init = false
-local file_loaded = false
+local shutdown = false
 local state = {}
 local last_state = {}
 local state_path
@@ -166,6 +166,7 @@ local function watch_changes()
 
     if dirty then
         save_state()
+        if shutdown then return end
         save_cooldown = mp.add_timeout(1, function()
             save_cooldown = nil
         end)
@@ -182,5 +183,6 @@ mp.register_idle(watch_changes)
 
 mp.register_event("shutdown", function()
     save_cooldown = nil
+    shutdown = true
     watch_changes()
 end)
