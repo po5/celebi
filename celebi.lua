@@ -140,7 +140,12 @@ local function watch_changes()
     if save_cooldown then return end
 
     if not init then
-        state_path = mp.command_native({"expand-path", "~~/celebi.txt"})
+        state_path, found = debug.getinfo(1, "S").source:gsub("^@", ""):gsub("([\\/])scripts[\\/][^\\/]+%.lua$", "%1")
+        if found > 0 then
+            state_path = state_path .. "celebi.txt"
+        else
+            state_path = mp.command_native({"expand-path", "~~/celebi.txt"})
+        end
         read_options(state, "celebi", state_path)
         for property, enabled in pairs(options) do
             if enabled and state[property] ~= nil and not mp.get_property_bool("option-info/"..property.."/set-from-commandline", false) then
